@@ -40,7 +40,7 @@ def main():
     print df
 
     #create graph-viz-obj
-    gv = graph_viz(df, g, filename='example1_output/opinion_dynamic', df_iteration_key='iteration',
+    gv = graph_viz(df, g, filename='example_opdyn_output/opinion_dynamic', df_iteration_key='iteration',
                    df_vertex_key='vertex', df_opinion_key='opinion', ips=1, smoothing=10, max_node_alpha=1.0,
                    output_size=(800, 600), edge_blending=True)
     gv.plot_network_evolution()
