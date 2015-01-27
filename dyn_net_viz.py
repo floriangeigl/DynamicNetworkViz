@@ -40,10 +40,14 @@ def print_f(*args, **kwargs):
 
 
 class graph_viz():
-    def __init__(self, dataframe, network, filename='output/network_evolution.png', verbose=1, df_iteration_key='iteration', df_vertex_key='vertex', df_opinion_key=None,
-                 df_state_key=None, df_edges_key=None, plot_each=1, ips=1, output_size=(1920, 1080), bg_color='white', fraction_groups=None, smoothing=1, rate=30, cmap=None,
-                 inactive_fraction_f=lambda x: x == {-1}, inactive_value_f=lambda x: x <= 0, deactivated_color_nodes=None, mu=0.0, mark_new_active_nodes=False,
-                 pause_after_iteration=0, largest_component_only=False, edge_blending=False, keep_inactive_nodes=True, max_node_alpha=0.9):
+    def __init__(self, dataframe, network, filename='output/network_evolution.png', verbose=1,
+                 df_iteration_key='iteration', df_vertex_key='vertex', df_opinion_key=None,
+                 df_state_key=None, df_edges_key=None, plot_each=1, ips=1, output_size=(1920, 1080), bg_color='white',
+                 fraction_groups=None, smoothing=1, rate=30, cmap=None,
+                 inactive_fraction_f=lambda x: x == {-1}, inactive_value_f=lambda x: x <= 0,
+                 deactivated_color_nodes=None, mu=0.0, mark_new_active_nodes=False,
+                 pause_after_iteration=0, largest_component_only=False, edge_blending=False, keep_inactive_nodes=True,
+                 max_node_alpha=0.9):
         assert isinstance(dataframe, pd.DataFrame)
         self.df = dataframe
         self.df_iteration_key = df_iteration_key
@@ -111,7 +115,8 @@ class graph_viz():
             self.cmap = colormap.get_cmap(def_cmap)
         elif isinstance(self.cmap, str):
             self.cmap = colormap.get_cmap(self.cmap)
-        self.deactivated_color_nodes = [0.179, 0.179, 0.179, 0.05] if deactivated_color_nodes is None else deactivated_color_nodes
+        self.deactivated_color_nodes = [0.179, 0.179, 0.179,
+                                        0.05] if deactivated_color_nodes is None else deactivated_color_nodes
         efilt = self.network.new_edge_property('bool')
         for e in self.network.edges():
             efilt[e] = False
@@ -119,7 +124,8 @@ class graph_viz():
         self.first_iteration = True
 
     def generate_filename(self, filenum):
-        return self.filename_folder + '/' + self.tmp_folder_name + str(int(filenum)).rjust(6, '0') + self.filename_basename
+        return self.filename_folder + '/' + self.tmp_folder_name + str(int(filenum)).rjust(6,
+                                                                                           '0') + self.filename_basename
 
     def get_color_mapping(self, categories=None, groups=None, cmap=None):
         self.print_f('get color mapping', verbose=2)
@@ -172,10 +178,12 @@ class graph_viz():
         shift_mult = np.array(self.output_size) * (1 - spacing)
         shift_add = np.array(self.output_size) * (spacing / 2)
         max_v += (np.array([1, 1]) * (max_v == 0))
-        print 'max:', max_v
+        print
+        'max:', max_v
         mult = (1 / max_v) * shift_mult
         pos.set_2d_array(((pos_ar - min_v) * mult + shift_add).T)
-        print pos.get_2d_array((0,1)).T
+        print
+        pos.get_2d_array((0, 1)).T
         return pos
 
     def calc_grouped_sfdp_layout(self, network=None, groups_vp='groups', pos=None, mu=None, **kwargs):
@@ -200,7 +208,8 @@ class graph_viz():
                 groups_map[v] = -1
         return sfdp_layout(network, pos=pos, groups=groups_map, eweight=e_weights, mu=mu, **kwargs)
 
-    def plot_network_evolution(self, dynamic_pos=False, infer_size_from_fraction=True, delete_pictures=True, label_pictures=True):
+    def plot_network_evolution(self, dynamic_pos=False, infer_size_from_fraction=True, delete_pictures=True,
+                               label_pictures=True):
         self.output_filenum = 0
         tmp_smoothing = self.ips * self.smoothing
         smoothing = self.smoothing
@@ -260,7 +269,8 @@ class graph_viz():
 
         self.df[self.df_iteration_key] = self.df[self.df_iteration_key].astype(int)
         grouped_by_iteration = self.df.groupby(self.df_iteration_key)
-        self.print_f('Resulting video will be ~', int(total_iterations / self.plot_each * smoothing / fps) + (init_pause_time * 2 / fps * smoothing) + int(
+        self.print_f('Resulting video will be ~', int(total_iterations / self.plot_each * smoothing / fps) + (
+        init_pause_time * 2 / fps * smoothing) + int(
             total_iterations / self.plot_each * self.pause_after_iteration), 'seconds long')
 
         self.print_f('Iterations with changes:', ', '.join([str(i) for i, j in grouped_by_iteration]), verbose=2)
@@ -322,7 +332,8 @@ class graph_viz():
                                 active_edges.update(new_active_edges)
                             else:
                                 active_edges.add(new_active_edges)
-                        self.print_f(one_iteration, vertex, 'has', fractions_vp[vertex] if self.draw_fractions else (vertex_state[vertex] if vertex_state is not None else ''), verbose=2)
+                        self.print_f(one_iteration, vertex, 'has', fractions_vp[vertex] if self.draw_fractions else (
+                        vertex_state[vertex] if vertex_state is not None else ''), verbose=2)
                 if iteration_idx % self.plot_each == 0 or iteration_idx == 0 or iteration_idx == total_iterations:
                     current_perc = int(iteration_idx / total_iterations * 100)
                     if just_copy:
@@ -335,23 +346,30 @@ class graph_viz():
                     if self.verbose >= 2 or current_perc > last_progress_perc:
                         last_progress_perc = current_perc
                         ext = ' | just copy' if just_copy else (' | draw edges' if draw_edges else '')
-                        self.print_f('plot network evolution iteration:', one_iteration, '(' + str(current_perc) + '%)', 'est remain:', est_time, ext, verbose=1)
+                        self.print_f('plot network evolution iteration:', one_iteration, '(' + str(current_perc) + '%)',
+                                     'est remain:', est_time, ext, verbose=1)
                     if iteration_idx == 0 or iteration_idx == total_iterations:
                         for i in xrange(init_pause_time):
                             if i == 1:
                                 self.print_f('init' if iteration_idx == 0 else 'exit', 'phase', verbose=2)
                             self.generate_files[one_iteration].extend(
-                                self.__draw_graph_animation_pic(color_mapping, vertex_state_map=vertex_state, fraction_map=fractions_vp, draw_edges=draw_edges, just_copy_last=(i != 0 or just_copy),
-                                                                smoothing=smoothing, dynamic_pos=dynamic_pos, infer_size_from_fraction=infer_size_from_fraction,
+                                self.__draw_graph_animation_pic(color_mapping, vertex_state_map=vertex_state,
+                                                                fraction_map=fractions_vp, draw_edges=draw_edges,
+                                                                just_copy_last=(i != 0 or just_copy),
+                                                                smoothing=smoothing, dynamic_pos=dynamic_pos,
+                                                                infer_size_from_fraction=infer_size_from_fraction,
                                                                 edge_map=active_edges))
                     else:
                         self.generate_files[one_iteration].extend(
-                            self.__draw_graph_animation_pic(color_mapping, vertex_state_map=vertex_state, fraction_map=fractions_vp, draw_edges=draw_edges, smoothing=smoothing,
-                                                            just_copy_last=just_copy, dynamic_pos=dynamic_pos, infer_size_from_fraction=infer_size_from_fraction,
+                            self.__draw_graph_animation_pic(color_mapping, vertex_state_map=vertex_state,
+                                                            fraction_map=fractions_vp, draw_edges=draw_edges,
+                                                            smoothing=smoothing,
+                                                            just_copy_last=just_copy, dynamic_pos=dynamic_pos,
+                                                            infer_size_from_fraction=infer_size_from_fraction,
                                                             edge_map=active_edges))
                     if self.pause_after_iteration > 0:
                         last_img_fn = self.generate_files[one_iteration][-1]
-                        for pause_pic in range(self.pause_after_iteration*fps):
+                        for pause_pic in range(self.pause_after_iteration * fps):
                             pause_pic_fn = self.generate_filename(self.output_filenum)
                             shutil.copy(last_img_fn, pause_pic_fn)
                             self.generate_files[one_iteration].append(pause_pic_fn)
@@ -364,13 +382,14 @@ class graph_viz():
         self.create_video(fps, delete_pictures)
         return self.df, self.network
 
-    def __draw_graph_animation_pic(self, color_map=colormap.get_cmap('gist_rainbow'), vertex_state_map=None, fraction_map=None, draw_edges=True, just_copy_last=False, smoothing=1,
+    def __draw_graph_animation_pic(self, color_map=colormap.get_cmap('gist_rainbow'), vertex_state_map=None,
+                                   fraction_map=None, draw_edges=True, just_copy_last=False, smoothing=1,
                                    dynamic_pos=False, infer_size_from_fraction=True, edge_map=None):
         generated_files = []
         if just_copy_last:
             min_filenum = self.output_filenum
             if min_filenum == 0:
-                empty_img = Image.new("RGBA", self.output_size, tuple([int(i*255) for i in self.bg_color]))
+                empty_img = Image.new("RGBA", self.output_size, tuple([int(i * 255) for i in self.bg_color]))
                 empty_img.save(self.generate_filename(min_filenum), 'PNG')
                 orig_filename = self.generate_filename(min_filenum)
             else:
@@ -383,14 +402,16 @@ class graph_viz():
                 self.output_filenum += 1
             self.print_f('Copy file:', orig_filename, ' X ', smoothing, verbose=2)
             return generated_files
-        default_edge_alpha = min((1 / np.log(self.network.num_vertices())) if self.network.num_vertices() > 100 else 0.9, 0.01)
+        default_edge_alpha = min(
+            (1 / np.log(self.network.num_vertices())) if self.network.num_vertices() > 100 else 0.9, 0.01)
         default_edge_color = [0.3, 0.3, 0.3, default_edge_alpha]
         deactivated_edge_alpha = (1 / self.network.num_edges()) if self.network.num_edges() > 0 else 0
         deactivated_edge_color = [0.3, 0.3, 0.3, deactivated_edge_alpha]
 
         min_vertex_size_shrinking_factor = 2
         v_state = self.network.new_vertex_property('float')
-        if not infer_size_from_fraction and vertex_state_map is None or (infer_size_from_fraction and fraction_map is None):
+        if not infer_size_from_fraction and vertex_state_map is None or (
+            infer_size_from_fraction and fraction_map is None):
             infer_size_from_fraction = False
             if vertex_state_map is None:
                 v_state.a = [1] * self.network.num_vertices()
@@ -486,7 +507,8 @@ class graph_viz():
             for v in self.network.vertices():
                 val = v_state[v]
                 inactive = self.inactive_value_f(val)
-                colors[v] = color_map(v_color_vals[v]) if not inactive else (self.deactivated_color_nodes if not dynamic_pos else (self.deactivated_color_nodes[:3] + [0]))
+                colors[v] = color_map(v_color_vals[v]) if not inactive else (
+                self.deactivated_color_nodes if not dynamic_pos else (self.deactivated_color_nodes[:3] + [0]))
                 colors[v].a[-1] = min(colors[v].a[-1], self.max_node_alpha)
                 if inactive:
                     if edges_graph is not None:
@@ -517,14 +539,16 @@ class graph_viz():
         else:
             all_active_nodes.a = active_nodes.a
 
-        #calc dynamic positioning
+        # calc dynamic positioning
         if dynamic_pos:
             pos_tmp_net = GraphView(self.network, vfilt=all_active_nodes, efilt=active_edges)
             old_pos_update = pos_tmp_net.new_vertex_property('vector<float>')
             old_pos_abs_update = pos_tmp_net.new_vertex_property('vector<float>')
             if self.mark_new_active_nodes:
                 colors = pos_tmp_net.new_vertex_property('vector<float>')
-                colors.set_2d_array(np.array([np.array([0.0, 0.0, 1.0, self.max_node_alpha]) if self.active_nodes[n] else np.array([1.0, 0.0, 0.0, self.max_node_alpha]) for n in pos_tmp_net.vertices()]).T)
+                colors.set_2d_array(np.array([
+                    np.array([0.0, 0.0, 1.0, self.max_node_alpha]) if self.active_nodes[n] else np.array(
+                        [1.0, 0.0, 0.0, self.max_node_alpha]) for n in pos_tmp_net.vertices()]).T)
             for v in pos_tmp_net.vertices():
                 old_pos_update[v] = self.pos[v]
                 old_pos_abs_update[v] = self.pos_abs[v]
@@ -534,7 +558,8 @@ class graph_viz():
             count_new_active = 0
             for v in filter(lambda m: not self.active_nodes[m] and active_nodes[m], pos_tmp_net.vertices()):
                 count_new_active += 1
-                orig_abs_pos = [(self.pos[n].a, self.pos_abs[n].a) for n in filter(lambda ln: self.active_nodes[ln], v.all_neighbours())]
+                orig_abs_pos = [(self.pos[n].a, self.pos_abs[n].a) for n in
+                                filter(lambda ln: self.active_nodes[ln], v.all_neighbours())]
                 if len(orig_abs_pos):
                     orig, abs_orig = zip(*orig_abs_pos)
                     rand_norm = np.random.normal(1, 0.01, 2)
@@ -544,13 +569,15 @@ class graph_viz():
                     self.pos[v] = []
                     self.pos_abs[v] = []
                 self.print_f('mean pos:', self.pos[v], verbose=2)
-            self.print_f('new active nodes:', count_new_active, '(', count_new_active / pos_tmp_net.num_vertices() * 100, '%)', verbose=2)
+            self.print_f('new active nodes:', count_new_active, '(',
+                         count_new_active / pos_tmp_net.num_vertices() * 100, '%)', verbose=2)
             try:
                 new_pos = self.calc_grouped_sfdp_layout(network=pos_tmp_net, groups_vp='groups', pos=self.pos)
                 self.print_f('dyn pos: updated grouped sfdp', verbose=2)
             except KeyError:
                 self.print_f('dyn pos: update sfdp', verbose=2)
-                new_pos = sfdp_layout(pos_tmp_net, pos=self.pos, mu=self.mu, multilevel=False, max_iter=(int(count_new_active * np.log2(count_new_active + 1))) if count_new_active > 0 else 0, epsilon=0.1)
+                new_pos = sfdp_layout(pos_tmp_net, pos=self.pos, mu=self.mu, multilevel=False, max_iter=(
+                int(count_new_active * np.log2(count_new_active + 1))) if count_new_active > 0 else 0, epsilon=0.1)
 
             # calc absolute positions
             new_pos_abs = self.calc_absolute_positions(new_pos, network=pos_tmp_net)
@@ -614,12 +641,14 @@ class graph_viz():
                 interpolated_fraction_vals = []
                 vertex_shape = "circle"
                 interpolated_color = nodes_graph.new_vertex_property('vector<float>')
-                interpolated_color.set_2d_array(new_fac * colors.get_2d_array((0, 1, 2, 3)) + old_fac * last_node_color.get_2d_array((0, 1, 2, 3)))
+                interpolated_color.set_2d_array(
+                    new_fac * colors.get_2d_array((0, 1, 2, 3)) + old_fac * last_node_color.get_2d_array((0, 1, 2, 3)))
 
             interpolated_size.a = old_fac * old_vertex_size.a + new_fac * vertex_size.a
             if dynamic_pos:
                 interpolated_pos = nodes_graph.new_vertex_property('vector<float>')
-                interpolated_pos.set_2d_array(old_fac * self.pos_abs.get_2d_array((0, 1)) + new_fac * new_pos_abs.get_2d_array((0, 1)))
+                interpolated_pos.set_2d_array(
+                    old_fac * self.pos_abs.get_2d_array((0, 1)) + new_fac * new_pos_abs.get_2d_array((0, 1)))
             else:
                 interpolated_pos = self.pos_abs
 
@@ -628,15 +657,20 @@ class graph_viz():
                 eorder.a = edge_color.get_2d_array([3])[0]
                 if dynamic_pos or self.edge_blending:
                     interpolated_edge_color = edges_graph.new_edge_property('vector<float>')
-                    interpolated_edge_color.set_2d_array(last_edge_color.get_2d_array((0, 1, 2, 3)) * old_fac + edge_color.get_2d_array((0, 1, 2, 3)) * new_fac)
+                    interpolated_edge_color.set_2d_array(
+                        last_edge_color.get_2d_array((0, 1, 2, 3)) * old_fac + edge_color.get_2d_array(
+                            (0, 1, 2, 3)) * new_fac)
                 else:
                     interpolated_edge_color = edge_color
                 self.print_f('draw edgegraph', verbose=2)
                 if nodes_graph.num_vertices() > 0:
-                    graph_draw(edges_graph, output=self.edges_filename, output_size=output_size, pos=interpolated_pos, fit_view=False, vorder=interpolated_size, vertex_size=0, vertex_fill_color=self.bg_color, vertex_color=self.bg_color, edge_pen_width=1,
-                               edge_color=interpolated_edge_color, eorder=eorder, vertex_pen_width=0.0, bg_color=self.bg_color)
+                    graph_draw(edges_graph, output=self.edges_filename, output_size=output_size, pos=interpolated_pos,
+                               fit_view=False, vorder=interpolated_size, vertex_size=0, vertex_fill_color=self.bg_color,
+                               vertex_color=self.bg_color, edge_pen_width=1,
+                               edge_color=interpolated_edge_color, eorder=eorder, vertex_pen_width=0.0,
+                               bg_color=self.bg_color)
                 else:
-                    empty_img = Image.new("RGBA", self.output_size, tuple([int(i*255) for i in self.bg_color]))
+                    empty_img = Image.new("RGBA", self.output_size, tuple([int(i * 255) for i in self.bg_color]))
                     empty_img.save(self.edges_filename, 'PNG')
                 self.print_f('ok', verbose=2)
                 plt.close('all')
@@ -644,11 +678,15 @@ class graph_viz():
             filename = self.generate_filename(self.output_filenum)
             self.print_f('draw nodegraph', verbose=2)
             if nodes_graph.num_vertices() > 0:
-                graph_draw(nodes_graph, fit_view=False, pos=interpolated_pos, vorder=interpolated_size, vertex_size=interpolated_size, vertex_pie_fractions=interpolated_fraction_vals,
-                           vertex_pie_colors=interpolated_color, vertex_fill_color='blue' if self.draw_fractions else interpolated_color, vertex_shape=vertex_shape, output=filename,
-                           output_size=output_size, vertex_pen_width=0.0, vertex_color='blue' if self.draw_fractions else interpolated_color)
+                graph_draw(nodes_graph, fit_view=False, pos=interpolated_pos, vorder=interpolated_size,
+                           vertex_size=interpolated_size, vertex_pie_fractions=interpolated_fraction_vals,
+                           vertex_pie_colors=interpolated_color,
+                           vertex_fill_color='blue' if self.draw_fractions else interpolated_color,
+                           vertex_shape=vertex_shape, output=filename,
+                           output_size=output_size, vertex_pen_width=0.0,
+                           vertex_color='blue' if self.draw_fractions else interpolated_color)
             else:
-                empty_img = Image.new("RGBA", self.output_size, tuple([int(i*255) for i in self.bg_color]))
+                empty_img = Image.new("RGBA", self.output_size, tuple([int(i * 255) for i in self.bg_color]))
                 empty_img.save(filename, 'PNG')
             self.output_filenum += 1
             self.print_f('ok', verbose=2)
@@ -678,10 +716,12 @@ class graph_viz():
 
     def label_output(self):
         num_generated_images = sum(map(len, self.generate_files.values()))
-        text_font = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf", int(round(self.output_size[1] * 0.05)))
+        text_font = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf",
+                                       int(round(self.output_size[1] * 0.05)))
         blending = len(self.generate_files[sorted(self.generate_files.keys())[2]]) > 10
         self.print_f('label', num_generated_images, 'pictures', ('with blending' if blending else ''))
-        label_pos = (self.output_size[0] - (0.25 * self.output_size[0]), self.output_size[1] - (0.1 * self.output_size[1]))
+        label_pos = (
+        self.output_size[0] - (0.25 * self.output_size[0]), self.output_size[1] - (0.1 * self.output_size[1]))
         label_img_size = self.output_size
         label_im_bgc = (255, 255, 255, 0)
         for idx, (label, files) in enumerate(self.generate_files.iteritems()):
@@ -690,12 +730,13 @@ class graph_viz():
             label = str(label)
             if blending:
                 # blend-in and out label
-                alpha_values = np.array([(len(files) / 2) - abs(smoothing_step - (len(files) / 2)) for smoothing_step in range(len(files))])
+                alpha_values = np.array(
+                    [(len(files) / 2) - abs(smoothing_step - (len(files) / 2)) for smoothing_step in range(len(files))])
                 alpha_values /= alpha_values.max() * (1 + (1 / len(files)))
                 alpha_values = (np.array([min(1, i) for i in alpha_values]) * 255).astype('int')
                 label_img = None
                 for img_idx, img_fname in enumerate(files):
-                    if img_idx == 0 or (img_idx > 0 and alpha_values[img_idx-1] != alpha_values[img_idx]):
+                    if img_idx == 0 or (img_idx > 0 and alpha_values[img_idx - 1] != alpha_values[img_idx]):
                         label_img = Image.new("RGBA", label_img_size, label_im_bgc)
                         label_drawer = ImageDraw.Draw(label_img)
                         label_drawer.text(label_pos, label, font=text_font, fill=(0, 0, 0, alpha_values[img_idx]))
@@ -721,13 +762,17 @@ class graph_viz():
             num_generated_images = sum(map(len, self.generate_files.values()))
             with open(os.devnull, "w") as devnull:
                 self.print_f('create movie of', num_generated_images, 'pictures', verbose=1)
-                p_call = ['ffmpeg', '-framerate', str(fps), '-i', self.filename_folder + '/' + self.tmp_folder_name + '%06d' + file_basename + '.png', '-framerate',
+                p_call = ['ffmpeg', '-framerate', str(fps), '-i',
+                          self.filename_folder + '/' + self.tmp_folder_name + '%06d' + file_basename + '.png',
+                          '-framerate',
                           str(fps), '-r', str(fps), '-c:v', 'libx264', '-y', '-pix_fmt', 'yuv420p',
                           self.filename_folder + '/' + file_basename.strip('_') + '.avi']
                 self.print_f('call:', p_call, verbose=2)
                 exit_status = subprocess.check_call(p_call, stdout=devnull, stderr=devnull)
                 if exit_status == 0 and delete_pictures:
                     self.print_f('delete pictures...', verbose=1)
-                    _ = subprocess.check_call(['rm ' + str(self.filename_folder + '/' + self.tmp_folder_name + '*' + file_basename + '.png')], shell=True, stdout=devnull)
+                    _ = subprocess.check_call(
+                        ['rm ' + str(self.filename_folder + '/' + self.tmp_folder_name + '*' + file_basename + '.png')],
+                        shell=True, stdout=devnull)
 
 

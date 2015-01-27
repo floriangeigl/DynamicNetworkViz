@@ -4,6 +4,7 @@ import pandas as pd
 from graph_tool.all import *
 from dyn_net_viz import graph_viz
 
+
 def main():
     # create an undirected tree
     second_level_nodes = 10
@@ -57,11 +58,13 @@ def main():
         for v in third_level:
             data.append((iteration, v, 0))
 
-    #create the dataframe
+    # create the dataframe
     df = pd.DataFrame(columns=['iteration', 'vertex', 'activity'], data=data)
 
     #create graph-viz-obj
-    gv = graph_viz(df, g, filename='example2_output/activity_dynamics', df_iteration_key='iteration', df_vertex_key='vertex', df_state_key='activity', fps=1, smoothing=10, max_node_alpha=1.0, output_size=(800, 600), edge_blending=True)
+    gv = graph_viz(df, g, filename='example2_output/activity_dynamics', df_iteration_key='iteration',
+                   df_vertex_key='vertex', df_state_key='activity', ips=1, smoothing=10, max_node_alpha=1.0,
+                   output_size=(800, 600), edge_blending=True)
     gv.plot_network_evolution()
 
 

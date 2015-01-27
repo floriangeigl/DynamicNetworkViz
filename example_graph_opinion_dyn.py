@@ -4,6 +4,7 @@ import pandas as pd
 from graph_tool.all import *
 from dyn_net_viz import graph_viz
 
+
 def main():
     # create an circular undirected graph containing 10 nodes
     num_nodes = 10
@@ -13,7 +14,7 @@ def main():
         g.add_edge(v1, nodes[(idx + 1) % len(nodes)])
     print g
 
-    #define two opinions and pass one of them from neighbour to neighbour through the graph
+    # define two opinions and pass one of them from neighbour to neighbour through the graph
     op1 = 0
     op2 = 1
     data = []
@@ -39,7 +40,9 @@ def main():
     print df
 
     #create graph-viz-obj
-    gv = graph_viz(df, g, filename='example1_output/opinion_dynamic', df_iteration_key='iteration', df_vertex_key='vertex', df_opinion_key='opinion', fps=1, smoothing=10, max_node_alpha=1.0, output_size=(800, 600), edge_blending=True)
+    gv = graph_viz(df, g, filename='example1_output/opinion_dynamic', df_iteration_key='iteration',
+                   df_vertex_key='vertex', df_opinion_key='opinion', ips=1, smoothing=10, max_node_alpha=1.0,
+                   output_size=(800, 600), edge_blending=True)
     gv.plot_network_evolution()
 
 
