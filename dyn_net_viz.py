@@ -43,7 +43,7 @@ class graph_viz():
     def __init__(self, dataframe, network, filename='output/network_evolution.png', verbose=1,
                  df_iteration_key='iteration', df_vertex_key='vertex', df_opinion_key=None,
                  df_state_key=None, df_edges_key=None, plot_each=1, ips=1, output_size=(1920, 1080), bg_color='white',
-                 fraction_groups=None, smoothing=1, rate=30, cmap=None,
+                 opinion_groups=None, smoothing=1, rate=30, cmap=None,
                  inactive_fraction_f=lambda x: x == {-1}, inactive_value_f=lambda x: x <= 0,
                  deactivated_color_nodes=None, mu=0.0, mark_new_active_nodes=False,
                  pause_after_iteration=0, largest_component_only=False, edge_blending=False, keep_inactive_nodes=True,
@@ -97,7 +97,7 @@ class graph_viz():
             self.output_size = (self.output_size, self.output_size)
         self.color_converter = color_converter()
         self.bg_color = self.color_converter.to_rgba(bg_color)
-        self.fraction_groups = fraction_groups
+        self.opinion_groups = opinion_groups
         self.smoothing = smoothing
         self.rate = rate
         self.generate_files = None
@@ -226,7 +226,7 @@ class graph_viz():
         self.print_f('Init pause:', init_pause_time, verbose=2)
 
         # get colors
-        color_mapping = self.get_color_mapping(self.categories, self.fraction_groups, self.cmap)
+        color_mapping = self.get_color_mapping(self.categories, self.opinion_groups, self.cmap)
 
         # get positions
         if not dynamic_pos:
