@@ -1,8 +1,8 @@
 __author__ = 'Florian'
+from dyn_net_viz import graph_viz
 import datetime
 import pandas as pd
 from graph_tool.all import *
-from dyn_net_viz import graph_viz
 
 
 def main():
